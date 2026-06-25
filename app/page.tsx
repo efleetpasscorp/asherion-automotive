@@ -64,7 +64,9 @@ export default async function HomePage() {
       <section className="hero" id="home">
         <div className="container">
           <h1 className="h-xl text-balance">
-            <span className="outline-text">Explore The World</span> In A Car You&apos;ll Love
+            <span className="outline-text">Explore The World</span>
+            <br />
+            In A Car You&apos;ll Love
           </h1>
           <p className="lead">
             Quality cars, transparent pricing, and a hassle-free buying experience.
