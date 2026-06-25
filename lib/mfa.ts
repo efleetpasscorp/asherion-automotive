@@ -59,11 +59,12 @@ export async function qrDataUrl(secretBase32: string): Promise<string> {
   return QRCode.toDataURL(otpauthUri(secretBase32), { margin: 1, width: 224 })
 }
 
-// Validate a 6-digit code against a given secret (±1 time-step tolerance).
+// Validate a 6-digit code against a given secret. A ±2 step window (±60s)
+// absorbs typical clock drift between the server and the user's phone.
 export function verifyToken(secretBase32: string, token: string): boolean {
   const cleaned = (token || "").replace(/\s+/g, "")
   if (!/^\d{6}$/.test(cleaned)) return false
-  const delta = buildTotp(secretBase32).validate({ token: cleaned, window: 1 })
+  const delta = buildTotp(secretBase32).validate({ token: cleaned, window: 2 })
   return delta !== null
 }
 

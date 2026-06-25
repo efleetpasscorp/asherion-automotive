@@ -59,6 +59,11 @@ export async function getEnrollmentSecret(): Promise<string | null> {
   return store.get(ENROLL_COOKIE)?.value ?? null
 }
 
+export async function clearEnrollmentSecret(): Promise<void> {
+  const store = await cookies()
+  store.delete(ENROLL_COOKIE)
+}
+
 // ---- Step 2 complete: establish the full session --------------------------
 
 export async function establishSession(): Promise<void> {

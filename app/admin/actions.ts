@@ -4,6 +4,7 @@ import { put } from "@vercel/blob"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import {
+  clearEnrollmentSecret,
   establishSession,
   getEnrollmentSecret,
   isAuthed,
@@ -29,8 +30,15 @@ export async function loginAction(_prev: ActionState, formData: FormData): Promi
 
   await startMfaChallenge()
   if (!(await isMfaEnrolled())) {
-    // Hold a candidate secret in a short-lived cookie until the first code confirms it.
-    await setEnrollmentSecret(generateSecret())
+    // Hold a candidate secret in a short-lived cookie until the first code confirms
+    // it. Reuse any secret already issued this enrollment so a re-submitted password
+    // doesn't invalidate a QR the admin may have just scanned.
+    const existing = await getEnrollmentSecret()
+    if (!existing) await setEnrollmentSecret(generateSecret())
+  } else {
+    // Already enrolled — make sure no stale enrollment secret lingers so we ask for
+    // the real authenticator code, not a fresh QR.
+    await clearEnrollmentSecret()
   }
   redirect("/admin/login")
 }
