@@ -10,6 +10,16 @@ export type SaleCar = {
   doors: string
   seats: string
   image: string
+  // Detail fields
+  year: string
+  odometer: string
+  fuel: string
+  body: string
+  color: string
+  drivetrain: string
+  rego: string
+  description: string
+  features: string[]
 }
 
 export type RentalCar = {
@@ -20,6 +30,15 @@ export type RentalCar = {
   price: string
   amountCents: number
   image: string
+  // Detail fields
+  trans: string
+  seats: string
+  doors: string
+  fuel: string
+  bags: string
+  deposit: string
+  description: string
+  features: string[]
 }
 
 export type AnyCar = SaleCar | RentalCar
@@ -45,14 +64,36 @@ export const imageSlots: ImageSlot[] = [
   { key: "mazda-2", label: "Mazda 2 Neo (For Sale)", defaultImage: "/images/mazda-2.png" },
 ]
 
-export const rentalCars: RentalCar[] = Array.from({ length: 6 }, (_, i) => ({
-  id: `rental-${i + 1}`,
-  kind: "rental" as const,
+const rentalTemplate: Omit<RentalCar, "id"> = {
+  kind: "rental",
   slot: "luxury-sedan",
   name: "Luxury Sedan",
   price: "From $129 / day",
   amountCents: 12900,
   image: "/images/luxury-sedan.png",
+  trans: "Automatic",
+  seats: "5 Seats",
+  doors: "4 Doors",
+  fuel: "Petrol",
+  bags: "3 Bags",
+  deposit: "$129 due today to reserve",
+  description:
+    "Travel in comfort and style with our flagship luxury sedan. Whether you need a refined ride for a business trip, a wedding, or a weekend away, this car delivers a smooth, quiet drive with premium leather seating, climate control, and the latest safety tech. Fully serviced, detailed, and ready to go.",
+  features: [
+    "Leather-appointed seating",
+    "Dual-zone climate control",
+    "Apple CarPlay & Android Auto",
+    "Reversing camera & sensors",
+    "Cruise control",
+    "Bluetooth & USB connectivity",
+    "Comprehensive insurance available",
+    "24/7 roadside assistance",
+  ],
+}
+
+export const rentalCars: RentalCar[] = Array.from({ length: 6 }, (_, i) => ({
+  ...rentalTemplate,
+  id: `rental-${i + 1}`,
 }))
 
 const saleTemplates: Array<Omit<SaleCar, "id">> = [
@@ -67,6 +108,25 @@ const saleTemplates: Array<Omit<SaleCar, "id">> = [
     doors: "4 Doors",
     seats: "5 Seats",
     image: "/images/mazda-3.png",
+    year: "2011",
+    odometer: "98,500 km",
+    fuel: "Petrol",
+    body: "Sedan",
+    color: "Crystal White",
+    drivetrain: "Front-Wheel Drive",
+    rego: "Registered until 09/2025",
+    description:
+      "A reliable and economical Mazda 3 BK that is perfect for first-car buyers, students, and daily commuters. This well-maintained sedan combines sharp handling with low running costs, and comes with a full service history. Known for their bulletproof reliability, the Mazda 3 is one of the smartest buys in its class.",
+    features: [
+      "Air conditioning",
+      "Power windows & mirrors",
+      "Alloy wheels",
+      "Cruise control",
+      "Bluetooth audio",
+      "ABS & dual airbags",
+      "Full service history",
+      "Roadworthy certificate included",
+    ],
   },
   {
     kind: "sale",
@@ -79,6 +139,25 @@ const saleTemplates: Array<Omit<SaleCar, "id">> = [
     doors: "5 Doors",
     seats: "5 Seats",
     image: "/images/mazda-2.png",
+    year: "2013",
+    odometer: "76,200 km",
+    fuel: "Petrol",
+    body: "Hatchback",
+    color: "Aluminium Silver",
+    drivetrain: "Front-Wheel Drive",
+    rego: "Registered until 11/2025",
+    description:
+      "The Mazda 2 Neo is the ultimate city runabout — nimble, fuel-efficient, and effortless to park. With its automatic transmission and compact footprint, it is ideal for navigating busy streets while keeping fuel bills low. A fantastic value hatchback that has been thoroughly inspected and detailed.",
+    features: [
+      "Automatic transmission",
+      "Air conditioning",
+      "Power steering",
+      "Central locking",
+      "Bluetooth & USB",
+      "ABS & airbags",
+      "Excellent fuel economy",
+      "Roadworthy certificate included",
+    ],
   },
 ]
 

@@ -1,3 +1,4 @@
+import Link from "next/link"
 import type { RentalCar, SaleCar } from "@/lib/cars"
 import { CheckoutButton } from "./checkout-button"
 import { DoorIcon, EngineIcon, GearIcon, LuggageIcon, SeatIcon } from "./icons"
@@ -5,12 +6,16 @@ import { DoorIcon, EngineIcon, GearIcon, LuggageIcon, SeatIcon } from "./icons"
 export function SaleCarCard({ car, tag = "For Sale" }: { car: SaleCar; tag?: string }) {
   return (
     <article className="card">
-      <div className="car-media">
+      <Link href={`/stock/${car.id}`} className="car-media" aria-label={`View details for ${car.name}`}>
         <span className="tag">{tag}</span>
         <img src={car.image || "/placeholder.svg"} alt={car.name} />
-      </div>
+      </Link>
       <div className="car-body">
-        <h3>{car.name}</h3>
+        <h3>
+          <Link href={`/stock/${car.id}`} className="car-title-link">
+            {car.name}
+          </Link>
+        </h3>
         <div className="car-price">{car.price}</div>
         <div className="car-specs">
           <div className="spec">
@@ -30,7 +35,12 @@ export function SaleCarCard({ car, tag = "For Sale" }: { car: SaleCar; tag?: str
             {car.seats}
           </div>
         </div>
-        <CheckoutButton carId={car.id} label="Buy Now & Pay" />
+        <div className="car-actions">
+          <Link href={`/stock/${car.id}`} className="btn btn-ghost">
+            View Details
+          </Link>
+          <CheckoutButton carId={car.id} label="Buy Now & Pay" />
+        </div>
       </div>
     </article>
   )
@@ -39,12 +49,16 @@ export function SaleCarCard({ car, tag = "For Sale" }: { car: SaleCar; tag?: str
 export function RentalCarCard({ car, tag = "Rental" }: { car: RentalCar; tag?: string }) {
   return (
     <article className="card">
-      <div className="car-media">
+      <Link href={`/stock/${car.id}`} className="car-media" aria-label={`View details for ${car.name}`}>
         <span className="tag">{tag}</span>
         <img src={car.image || "/placeholder.svg"} alt={car.name} />
-      </div>
+      </Link>
       <div className="car-body">
-        <h3>{car.name}</h3>
+        <h3>
+          <Link href={`/stock/${car.id}`} className="car-title-link">
+            {car.name}
+          </Link>
+        </h3>
         <div className="car-price">{car.price}</div>
         <div className="car-specs">
           <div className="spec">
@@ -56,7 +70,12 @@ export function RentalCarCard({ car, tag = "Rental" }: { car: RentalCar; tag?: s
             Luggage: 3 bags
           </div>
         </div>
-        <CheckoutButton carId={car.id} label="Book Now & Pay" />
+        <div className="car-actions">
+          <Link href={`/stock/${car.id}`} className="btn btn-ghost">
+            View Details
+          </Link>
+          <CheckoutButton carId={car.id} label="Book Now & Pay" />
+        </div>
       </div>
     </article>
   )
