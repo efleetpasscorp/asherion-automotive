@@ -44,7 +44,7 @@
       <a href="stock.html" class="btn btn-primary">Check out our range</a>
       <a href="about.html" class="btn btn-ghost">Learn More</a>
     </div>
-    <div class="hero-visual ph" data-label="Featured Vehicle"></div>
+    <div class="hero-visual ph img" data-label="Featured Vehicle" style="background-image:url('/images/hero-vehicle.png')"></div>
   </div>
 </section>
 
@@ -52,8 +52,8 @@
 <section class="section" id="about">
   <div class="container split">
     <div class="split-media">
-      <div class="ph" data-label="Showroom"></div>
-      <div class="ph" data-label="Our Team" style="margin-top:32px;"></div>
+      <div class="ph img" data-label="Showroom" style="background-image:url('/images/showroom.png')"></div>
+      <div class="ph img" data-label="Our Team" style="margin-top:32px;background-image:url('/images/team.png')"></div>
     </div>
     <div>
       <span class="eyebrow">About Us</span>
@@ -82,7 +82,7 @@
     </div>
     <div class="grid grid-3">
       <article class="card">
-        <div class="car-media ph" data-label="Luxury Sedan"><span class="tag">Featured</span></div>
+        <div class="car-media ph img" data-label="Luxury Sedan" style="background-image:url('/images/luxury-sedan.png')"><span class="tag">Featured</span></div>
         <div class="car-body">
           <h3>Luxury Sedan</h3>
           <div class="car-price">From $129 / day</div>
@@ -94,7 +94,7 @@
         </div>
       </article>
       <article class="card">
-        <div class="car-media ph" data-label="Luxury Sedan"></div>
+        <div class="car-media ph img" data-label="Luxury Sedan" style="background-image:url('/images/luxury-sedan.png')"></div>
         <div class="car-body">
           <h3>Luxury Sedan</h3>
           <div class="car-price">From $129 / day</div>
@@ -106,7 +106,7 @@
         </div>
       </article>
       <article class="card">
-        <div class="car-media ph" data-label="Luxury Sedan"></div>
+        <div class="car-media ph img" data-label="Luxury Sedan" style="background-image:url('/images/luxury-sedan.png')"></div>
         <div class="car-body">
           <h3>Luxury Sedan</h3>
           <div class="car-price">From $129 / day</div>
@@ -246,9 +246,10 @@
   const eng = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="4" y="8" width="16" height="9" rx="1"/><path d="M8 8V5h8v3"/></svg>';
   const door = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="6" y="3" width="12" height="18" rx="1"/><circle cx="14" cy="12" r="1"/></svg>';
   const seat = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 4v8h7M7 12l-1 8M14 12l1 8M14 12h3"/></svg>';
+  const carImg = { "Mazda 3 BK": "/images/mazda-3-bk.png", "Mazda 2 Neo": "/images/mazda-2-neo.png", "Luxury Sedan": "/images/luxury-sedan.png" };
   document.getElementById('cars-grid').innerHTML = cars.map(c => `
     <article class="card">
-      <div class="car-media ph" data-label="${c.name}"><span class="tag">For Sale</span></div>
+      <div class="car-media ph img" data-label="${c.name}" style="background-image:url('${carImg[c.name] || '/images/luxury-sedan.png'}')"><span class="tag">For Sale</span></div>
       <div class="car-body">
         <h3>${c.name}</h3>
         <div class="car-price">${c.price}</div>

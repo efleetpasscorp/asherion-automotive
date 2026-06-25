@@ -114,10 +114,11 @@
   const seat = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M7 4v8h7M7 12l-1 8M14 12l1 8M14 12h3"/></svg>';
   const lug = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/></svg>';
 
+  const carImg = { "Mazda 3 BK": "/images/mazda-3-bk.png", "Mazda 2 Neo": "/images/mazda-2-neo.png", "Luxury Sedan": "/images/luxury-sedan.png" };
   const rentals = Array.from({length:6}, () => ({ name: "Luxury Sedan", price: "From $129 / day" }));
   document.getElementById('rental-grid').innerHTML = rentals.map(c => `
     <article class="card">
-      <div class="car-media ph" data-label="${c.name}"><span class="tag">Rental</span></div>
+      <div class="car-media ph img" data-label="${c.name}" style="background-image:url('${carImg[c.name] || '/images/luxury-sedan.png'}')"><span class="tag">Rental</span></div>
       <div class="car-body">
         <h3>${c.name}</h3>
         <div class="car-price">${c.price}</div>
@@ -139,7 +140,7 @@
   ];
   document.getElementById('cars-grid').innerHTML = cars.map(c => `
     <article class="card">
-      <div class="car-media ph" data-label="${c.name}"><span class="tag">For Sale</span></div>
+      <div class="car-media ph img" data-label="${c.name}" style="background-image:url('${carImg[c.name] || '/images/luxury-sedan.png'}')"><span class="tag">For Sale</span></div>
       <div class="car-body">
         <h3>${c.name}</h3>
         <div class="car-price">${c.price}</div>
