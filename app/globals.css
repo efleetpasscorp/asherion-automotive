@@ -299,6 +299,26 @@ h1, h2, h3 { line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; }
 .admin-msg-error { color: #ff6b6b; }
 .admin-msg-success { color: #51cf66; }
 
+/* ---------- Admin MFA (Google Authenticator) ---------- */
+.mfa-enroll { margin-top: 24px; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.mfa-qr {
+  width: 200px; height: 200px; border-radius: 12px;
+  background: #fff; padding: 10px; border: 1px solid var(--border);
+}
+.mfa-manual {
+  font-size: 0.82rem; color: var(--muted-2); text-align: center; margin: 0; line-height: 1.6;
+}
+.mfa-manual code {
+  display: block; margin-top: 6px; padding: 8px 10px; border-radius: 8px;
+  background: #1c1c1c; border: 1px solid var(--border); color: #fff;
+  font-family: var(--font-mono, monospace); font-size: 0.78rem; word-break: break-all;
+}
+.otp-input {
+  text-align: center; letter-spacing: 0.5em; font-size: 1.4rem;
+  font-family: var(--font-mono, monospace); padding-left: 0.5em;
+}
+.mfa-cancel { margin-top: 2px; }
+
 .admin-shell { max-width: 1120px; margin: 0 auto; padding: 48px 20px 80px; }
 .admin-topbar {
   display: flex; align-items: flex-end; justify-content: space-between;

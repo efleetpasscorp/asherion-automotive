@@ -3,18 +3,65 @@
 import { put } from "@vercel/blob"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
-import { isAuthed, login, logout } from "@/lib/auth"
+import {
+  establishSession,
+  getEnrollmentSecret,
+  isAuthed,
+  isMfaPending,
+  logout,
+  setEnrollmentSecret,
+  startMfaChallenge,
+  verifyPassword,
+} from "@/lib/auth"
+import { generateSecret, getMfaSecret, isMfaEnrolled, setMfaSecret, verifyToken } from "@/lib/mfa"
 import { deleteVehicle, getVehicleById, upsertVehicle } from "@/lib/catalog"
 import type { RentalCar, SaleCar, VehicleStatus } from "@/lib/cars"
 
 export type ActionState = { error?: string; success?: string }
 
+// Step 1 — verify the password, then hand off to the MFA step. A new admin
+// (no authenticator enrolled yet) is sent into enrollment; otherwise they are
+// prompted for the 6-digit code from Google Authenticator.
 export async function loginAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
   const password = String(formData.get("password") ?? "")
   if (!password) return { error: "Please enter the password." }
-  const ok = await login(password)
-  if (!ok) return { error: "Incorrect password. Please try again." }
+  if (!verifyPassword(password)) return { error: "Incorrect password. Please try again." }
+
+  await startMfaChallenge()
+  if (!(await isMfaEnrolled())) {
+    // Hold a candidate secret in a short-lived cookie until the first code confirms it.
+    await setEnrollmentSecret(generateSecret())
+  }
+  redirect("/admin/login")
+}
+
+// Step 2 — verify the 6-digit authenticator code. Handles both first-time
+// enrollment (confirming the new secret) and normal sign-in.
+export async function verifyMfaAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  if (!(await isMfaPending())) return { error: "Your sign-in session expired. Please start again." }
+  const code = String(formData.get("code") ?? "").trim()
+  if (!code) return { error: "Enter the 6-digit code from your authenticator app." }
+
+  const enrollSecret = await getEnrollmentSecret()
+  if (enrollSecret) {
+    if (!verifyToken(enrollSecret, code)) {
+      return { error: "That code didn't match. Make sure you scanned the QR, then try again." }
+    }
+    await setMfaSecret(enrollSecret)
+  } else {
+    const secret = await getMfaSecret()
+    if (!secret) return { error: "Two-factor authentication isn't set up. Please start again." }
+    if (!verifyToken(secret, code)) return { error: "Incorrect or expired code. Please try again." }
+  }
+
+  await establishSession()
   redirect("/admin")
+}
+
+// Abandon an in-progress MFA step and return to the password screen.
+export async function cancelMfaAction(): Promise<void> {
+  await logout()
+  redirect("/admin/login")
 }
 
 export async function logoutAction(): Promise<void> {
