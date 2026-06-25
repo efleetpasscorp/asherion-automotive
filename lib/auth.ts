@@ -20,10 +20,14 @@ function safeEqual(a: string | undefined, b: string): boolean {
   return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b))
 }
 
+// Cookies must survive being read inside the v0 preview iframe (a cross-site
+// context). SameSite=Lax cookies are dropped there, which made the MFA "pending"
+// cookie disappear between steps and surfaced as a false "session expired" error.
+// SameSite=None + Secure works in iframes, served over HTTPS in preview/production.
 const baseCookie = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax" as const,
+  secure: true,
+  sameSite: "none" as const,
   path: "/",
 }
 
