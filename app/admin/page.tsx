@@ -5,7 +5,9 @@ import { isAuthed } from "@/lib/auth"
 import { getCatalog } from "@/lib/catalog"
 import { listTestDrives } from "@/lib/test-drives"
 import { listWishes } from "@/lib/wishes"
+import { getSocialSettings } from "@/lib/social-settings"
 import { VehicleManager } from "./vehicle-manager"
+import { SocialSettingsManager } from "./social-settings"
 import { logoutAction } from "./actions"
 
 export const metadata: Metadata = {
@@ -19,6 +21,7 @@ export default async function AdminPage() {
   const catalog = await getCatalog()
   const testDrives = await listTestDrives()
   const wishes = await listWishes()
+  const social = await getSocialSettings()
 
   return (
     <main className="admin-shell">
@@ -46,6 +49,24 @@ export default async function AdminPage() {
       </p>
 
       <VehicleManager sales={catalog.sales} rentals={catalog.rentals} />
+
+      {/* Reviews & Social */}
+      <section style={{ marginTop: 56 }}>
+        <h2 className="h-md" style={{ marginBottom: 6 }}>
+          Reviews &amp; Social
+        </h2>
+        <p className="admin-sub" style={{ marginBottom: 24 }}>
+          Connect Instagram and Facebook, and pull live Facebook reviews into the homepage reviews
+          section.
+        </p>
+        <SocialSettingsManager
+          instagramUrl={social.instagramUrl}
+          facebookUrl={social.facebookUrl}
+          facebookPageId={social.facebookPageId}
+          hasToken={Boolean(social.facebookAccessToken)}
+          updatedAt={social.updatedAt}
+        />
+      </section>
 
       {/* Wish orders */}
       <section style={{ marginTop: 56 }}>

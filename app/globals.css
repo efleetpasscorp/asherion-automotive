@@ -601,3 +601,20 @@ h1, h2, h3 { line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; }
 .wish-points li { display: flex; align-items: flex-start; gap: 10px; color: var(--muted); }
 .wish-points svg { width: 20px; height: 20px; stroke: var(--red); flex-shrink: 0; margin-top: 2px; }
 .booking-success .success-icon svg { stroke: var(--red); }
+
+/* ---------- Admin: Reviews & Social settings ---------- */
+.h-sm { font-size: 1.1rem; font-weight: 600; }
+.field-hint { display: block; margin-top: 6px; font-size: 0.78rem; color: var(--muted-2); }
+.social-settings { display: flex; flex-direction: column; gap: 18px; max-width: 720px; }
+.social-form { padding: 28px; }
+.social-group { margin-bottom: 28px; }
+.social-group:last-of-type { margin-bottom: 16px; }
+.social-group code {
+  background: rgba(255, 255, 255, 0.06); padding: 1px 6px; border-radius: 4px;
+  font-size: 0.85em; border: 1px solid var(--border);
+}
+.social-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+.social-test { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.social-note { padding: 20px 24px; border-left: 3px solid var(--red); }
+.social-note h4 { margin-bottom: 6px; }
+.reviews-live-note { text-align: center; margin-top: 24px; font-size: 0.85rem; color: var(--muted); }

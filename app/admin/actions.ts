@@ -16,6 +16,8 @@ import {
 } from "@/lib/auth"
 import { generateSecret, getMfaSecret, isMfaEnrolled, setMfaSecret, verifyToken } from "@/lib/mfa"
 import { deleteVehicle, getVehicleById, upsertVehicle } from "@/lib/catalog"
+import { saveSocialSettings } from "@/lib/social-settings"
+import { testFacebookConnection } from "@/lib/meta-reviews"
 import type { RentalCar, SaleCar, VehicleStatus } from "@/lib/cars"
 
 export type ActionState = { error?: string; success?: string }
@@ -195,6 +197,53 @@ export async function saveVehicleAction(_prev: ActionState, formData: FormData):
 
   revalidateCatalog()
   return { success: `Saved "${name}" successfully.` }
+}
+
+// ---- Reviews & Social (Instagram / Facebook) ----
+
+function isValidUrl(value: string): boolean {
+  if (!value) return true // optional
+  try {
+    const u = new URL(value)
+    return u.protocol === "http:" || u.protocol === "https:"
+  } catch {
+    return false
+  }
+}
+
+export async function saveSocialSettingsAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  if (!(await isAuthed())) return { error: "Your session expired. Please log in again." }
+
+  const instagramUrl = str(formData, "instagramUrl")
+  const facebookUrl = str(formData, "facebookUrl")
+  const facebookPageId = str(formData, "facebookPageId")
+  // Blank token means "keep the existing one" — handled in the store.
+  const facebookAccessToken = str(formData, "facebookAccessToken")
+
+  if (!isValidUrl(instagramUrl)) return { error: "Instagram URL must be a valid http(s) link." }
+  if (!isValidUrl(facebookUrl)) return { error: "Facebook URL must be a valid http(s) link." }
+
+  try {
+    await saveSocialSettings({
+      instagramUrl,
+      facebookUrl,
+      facebookPageId,
+      facebookAccessToken: facebookAccessToken || undefined,
+    })
+  } catch (error) {
+    console.error("[v0] Save social settings failed:", error)
+    return { error: "Could not save settings. Please try again." }
+  }
+
+  revalidatePath("/")
+  revalidatePath("/admin")
+  return { success: "Reviews & social settings saved." }
+}
+
+export async function testMetaConnectionAction(_prev: ActionState): Promise<ActionState> {
+  if (!(await isAuthed())) return { error: "Your session expired. Please log in again." }
+  const result = await testFacebookConnection()
+  return result.ok ? { success: result.message } : { error: result.message }
 }
 
 export async function deleteVehicleAction(_prev: ActionState, formData: FormData): Promise<ActionState> {

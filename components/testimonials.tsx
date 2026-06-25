@@ -1,14 +1,11 @@
 import { StarIcon } from "./icons"
+import { getSocialSettings } from "@/lib/social-settings"
+import { fetchFacebookReviews, type LiveReview } from "@/lib/meta-reviews"
 
-type Review = {
-  name: string
-  handle: string
-  source: "instagram" | "facebook"
-  rating: number
-  quote: string
-}
-
-const reviews: Review[] = [
+// Fallback sample reviews shown until live Facebook reviews are connected (or if
+// Meta blocks the request). Once a Page is connected in the admin portal, real
+// recommendations replace these automatically.
+const sampleReviews: LiveReview[] = [
   {
     name: "Jessica M.",
     handle: "@jess.drives",
@@ -35,7 +32,15 @@ const reviews: Review[] = [
   },
 ]
 
-export function Testimonials() {
+export async function Testimonials() {
+  const settings = await getSocialSettings()
+  const live = await fetchFacebookReviews()
+  const reviews = live.ok && live.reviews.length > 0 ? live.reviews : sampleReviews
+
+  const instagramUrl = settings.instagramUrl || "https://instagram.com/asherionautomotive"
+  const facebookUrl = settings.facebookUrl || "https://facebook.com/asherionautomotive"
+  const isLive = live.ok && live.reviews.length > 0
+
   return (
     <section className="section-sm" id="reviews">
       <div className="container">
@@ -46,7 +51,7 @@ export function Testimonials() {
           </div>
           <div className="reviews-socials">
             <a
-              href="https://instagram.com/asherionautomotive"
+              href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="social-link"
@@ -55,7 +60,7 @@ export function Testimonials() {
               <img src="/icons/instagram.svg" alt="" width={22} height={22} />
             </a>
             <a
-              href="https://facebook.com/asherionautomotive"
+              href={facebookUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="social-link"
@@ -66,11 +71,11 @@ export function Testimonials() {
           </div>
         </div>
         <div className="grid grid-3">
-          {reviews.map((r) => (
-            <figure className="card review-card" key={r.name}>
+          {reviews.map((r, i) => (
+            <figure className="card review-card" key={`${r.name}-${i}`}>
               <div className="review-stars" aria-label={`${r.rating} out of 5 stars`}>
-                {Array.from({ length: r.rating }).map((_, i) => (
-                  <StarIcon key={i} className="review-star" />
+                {Array.from({ length: r.rating }).map((_, s) => (
+                  <StarIcon key={s} className="review-star" />
                 ))}
               </div>
               <blockquote className="review-quote">{r.quote}</blockquote>
@@ -91,6 +96,7 @@ export function Testimonials() {
             </figure>
           ))}
         </div>
+        {isLive && <p className="reviews-live-note">Live reviews from our Facebook page.</p>}
       </div>
     </section>
   )
