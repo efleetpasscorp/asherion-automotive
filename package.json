@@ -4,7 +4,11 @@
   "private": true,
   "description": "Asherion Automotive static website",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "latest"
   }
 }
