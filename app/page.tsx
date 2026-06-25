@@ -4,8 +4,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { CtaBand } from "@/components/cta-band"
 import { Testimonials } from "@/components/testimonials"
 import { RentalCarCard, SaleCarCard } from "@/components/car-card"
-import { rentalCars, saleCars } from "@/lib/cars"
-import { applyOverrides, getImageOverrides } from "@/lib/image-store"
+import { getCatalog } from "@/lib/catalog"
 import { BoltIcon, CheckIcon, ShieldIcon, StarIcon, TargetIcon } from "@/components/icons"
 
 const services = [
@@ -49,10 +48,13 @@ const features = [
   },
 ]
 
+const byStatus = (a: { status: string }, b: { status: string }) =>
+  a.status === b.status ? 0 : a.status === "available" ? -1 : 1
+
 export default async function HomePage() {
-  const overrides = await getImageOverrides()
-  const rentals = applyOverrides(rentalCars, overrides)
-  const sales = applyOverrides(saleCars, overrides)
+  const catalog = await getCatalog()
+  const rentals = [...catalog.rentals].sort(byStatus)
+  const sales = [...catalog.sales].sort(byStatus)
 
   return (
     <>
@@ -139,9 +141,9 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="grid grid-3">
-            <RentalCarCard car={rentals[0]} tag="Featured" />
-            <RentalCarCard car={rentals[1]} />
-            <RentalCarCard car={rentals[2]} />
+            {rentals.slice(0, 3).map((car, i) => (
+              <RentalCarCard key={car.id} car={car} tag={i === 0 && car.status === "available" ? "Featured" : undefined} />
+            ))}
           </div>
         </div>
       </section>

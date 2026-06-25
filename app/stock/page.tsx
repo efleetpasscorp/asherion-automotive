@@ -4,18 +4,21 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { CtaBand } from "@/components/cta-band"
 import { RentalCarCard, SaleCarCard } from "@/components/car-card"
-import { rentalCars, saleCars } from "@/lib/cars"
-import { applyOverrides, getImageOverrides } from "@/lib/image-store"
+import { getCatalog } from "@/lib/catalog"
 
 export const metadata: Metadata = {
   title: "Our Stock — Asherion Automotive",
   description: "Browse the Asherion Automotive range. Quality cars, transparent pricing.",
 }
 
+// Available vehicles first, then "coming soon" entries.
+const byStatus = (a: { status: string }, b: { status: string }) =>
+  a.status === b.status ? 0 : a.status === "available" ? -1 : 1
+
 export default async function StockPage() {
-  const overrides = await getImageOverrides()
-  const rentals = applyOverrides(rentalCars, overrides)
-  const sales = applyOverrides(saleCars, overrides)
+  const catalog = await getCatalog()
+  const rentals = [...catalog.rentals].sort(byStatus)
+  const sales = [...catalog.sales].sort(byStatus)
 
   return (
     <>
@@ -39,8 +42,8 @@ export default async function StockPage() {
             </div>
           </div>
           <div className="grid grid-3">
-            {rentals.map((car, i) => (
-              <RentalCarCard key={i} car={car} />
+            {rentals.map((car) => (
+              <RentalCarCard key={car.id} car={car} />
             ))}
           </div>
         </div>
@@ -55,8 +58,8 @@ export default async function StockPage() {
             </div>
           </div>
           <div className="grid grid-3">
-            {sales.map((car, i) => (
-              <SaleCarCard key={i} car={car} />
+            {sales.map((car) => (
+              <SaleCarCard key={car.id} car={car} />
             ))}
           </div>
         </div>

@@ -6,15 +6,14 @@ import { SiteFooter } from "@/components/site-footer"
 import { CtaBand } from "@/components/cta-band"
 import { CheckoutButton } from "@/components/checkout-button"
 import { SaleCarCard, RentalCarCard } from "@/components/car-card"
-import { CheckIcon, DoorIcon, EngineIcon, GearIcon, SeatIcon, ShieldIcon } from "@/components/icons"
-import { getCarById, rentalCars, saleCars, type AnyCar } from "@/lib/cars"
-import { applyOverrides, getImageOverrides } from "@/lib/image-store"
+import { CheckIcon, DoorIcon, EngineIcon, GearIcon, SeatIcon, ShieldIcon, SparkleIcon } from "@/components/icons"
+import { getCatalog, getVehicleById } from "@/lib/catalog"
 
 type PageProps = { params: Promise<{ id: string }> }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params
-  const car = getCarById(id)
+  const car = await getVehicleById(id)
   if (!car) return { title: "Vehicle Not Found — Asherion Automotive" }
   return {
     title: `${car.name} — ${car.price} | Asherion Automotive`,
@@ -27,13 +26,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function VehicleDetailPage({ params }: PageProps) {
   const { id } = await params
-  const base = getCarById(id)
-  if (!base) notFound()
-
-  const overrides = await getImageOverrides()
-  const [car] = applyOverrides([base], overrides) as [AnyCar]
+  const car = await getVehicleById(id)
+  if (!car) notFound()
 
   const isSale = car.kind === "sale"
+  const isComingSoon = car.status === "coming-soon"
   const buyLabel = isSale ? "Buy Now & Pay" : "Book Now & Pay"
 
   // Specs differ by vehicle type.
@@ -60,12 +57,12 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         { label: "Deposit", value: car.deposit },
       ]
 
-  // Suggest a few other vehicles, excluding the current one.
-  const pool = isSale ? saleCars : rentalCars
-  const related = applyOverrides(
-    pool.filter((c) => c.id !== car.id).slice(0, 3),
-    overrides,
-  )
+  // Suggest a few other available vehicles, excluding the current one.
+  const catalog = await getCatalog()
+  const pool = isSale ? catalog.sales : catalog.rentals
+  const related = pool
+    .filter((c) => c.id !== car.id && c.status === "available")
+    .slice(0, 3)
 
   return (
     <>
@@ -87,7 +84,9 @@ export default async function VehicleDetailPage({ params }: PageProps) {
             {/* Left: media + narrative */}
             <div className="vehicle-main">
               <div className="vehicle-media">
-                <span className="tag">{isSale ? "For Sale" : "Rental"}</span>
+                <span className={isComingSoon ? "tag tag-soon" : "tag"}>
+                  {isComingSoon ? "Coming Soon" : isSale ? "For Sale" : "Rental"}
+                </span>
                 <img src={car.image || "/placeholder.svg"} alt={car.name} />
               </div>
 
@@ -149,12 +148,25 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                   </li>
                 </ul>
 
-                <CheckoutButton carId={car.id} label={buyLabel} />
+                {isComingSoon ? (
+                  <Link
+                    href={`/wish?vehicle=${encodeURIComponent(car.name)}`}
+                    className="btn btn-primary"
+                    style={{ width: "100%" }}
+                  >
+                    <SparkleIcon />
+                    Make a Wish Order
+                  </Link>
+                ) : (
+                  <CheckoutButton carId={car.id} label={buyLabel} />
+                )}
 
                 <div className="purchase-actions">
-                  <Link href="/test-drive" className="btn btn-ghost">
-                    Book a Test Drive
-                  </Link>
+                  {!isComingSoon && (
+                    <Link href="/test-drive" className="btn btn-ghost">
+                      Book a Test Drive
+                    </Link>
+                  )}
                   <Link href="/contact" className="btn btn-ghost">
                     Enquire
                   </Link>

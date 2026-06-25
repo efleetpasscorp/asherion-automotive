@@ -2,10 +2,10 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { isAuthed } from "@/lib/auth"
-import { getImageOverrides } from "@/lib/image-store"
-import { imageSlots } from "@/lib/cars"
+import { getCatalog } from "@/lib/catalog"
 import { listTestDrives } from "@/lib/test-drives"
-import { ImageEditor } from "./image-editor"
+import { listWishes } from "@/lib/wishes"
+import { VehicleManager } from "./vehicle-manager"
 import { logoutAction } from "./actions"
 
 export const metadata: Metadata = {
@@ -16,15 +16,16 @@ export const metadata: Metadata = {
 export default async function AdminPage() {
   if (!(await isAuthed())) redirect("/admin/login")
 
-  const overrides = await getImageOverrides()
+  const catalog = await getCatalog()
   const testDrives = await listTestDrives()
+  const wishes = await listWishes()
 
   return (
     <main className="admin-shell">
       <header className="admin-topbar">
         <div>
           <span className="eyebrow">Asherion Automotive</span>
-          <h1 className="h-lg">Stock Image Manager</h1>
+          <h1 className="h-lg">Vehicle Manager</h1>
         </div>
         <div className="admin-topbar-actions">
           <Link href="/" className="btn btn-ghost">
@@ -39,22 +40,63 @@ export default async function AdminPage() {
       </header>
 
       <p className="admin-sub">
-        Upload a new image for any stock vehicle. Changes appear instantly on the home and stock pages.
+        Add, edit, and remove the vehicles shown for sale and for rent. Mark a vehicle as
+        &ldquo;Coming soon&rdquo; to display it under a car cover with a Make-a-Wish order button.
+        Changes appear instantly across the site.
       </p>
 
-      <div className="grid grid-3 admin-grid">
-        {imageSlots.map((slot) => (
-          <ImageEditor
-            key={slot.key}
-            slot={{
-              key: slot.key,
-              label: slot.label,
-              currentImage: overrides[slot.key] ?? slot.defaultImage,
-            }}
-          />
-        ))}
-      </div>
+      <VehicleManager sales={catalog.sales} rentals={catalog.rentals} />
 
+      {/* Wish orders */}
+      <section style={{ marginTop: 56 }}>
+        <h2 className="h-md" style={{ marginBottom: 6 }}>
+          Wish Orders
+        </h2>
+        <p className="admin-sub" style={{ marginBottom: 24 }}>
+          Customer requests for vehicles they&apos;d like us to source. {wishes.length} total.
+        </p>
+
+        {wishes.length === 0 ? (
+          <div className="card" style={{ padding: 28 }}>
+            <p style={{ color: "var(--muted)" }}>No wish orders yet.</p>
+          </div>
+        ) : (
+          <div className="td-admin-list">
+            {wishes.map((w) => (
+              <div className="card td-admin-row" key={w.id}>
+                <div className="td-admin-info" style={{ width: "100%" }}>
+                  <h4>
+                    {w.year} {w.make} {w.model}
+                  </h4>
+                  <p className="td-admin-vehicle">
+                    Budget: {w.budget || "—"} · Colour: {w.color || "Any"}
+                  </p>
+                  <dl className="td-admin-meta">
+                    <div>
+                      <dt>Name</dt>
+                      <dd>{w.name}</dd>
+                    </div>
+                    <div>
+                      <dt>Email</dt>
+                      <dd>{w.email}</dd>
+                    </div>
+                    <div>
+                      <dt>Phone</dt>
+                      <dd>{w.phone}</dd>
+                    </div>
+                  </dl>
+                  {w.notes && <p className="td-admin-notes">{w.notes}</p>}
+                  <span className="td-admin-date">
+                    Submitted {new Date(w.createdAt).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Test drive requests */}
       <section style={{ marginTop: 56 }}>
         <h2 className="h-md" style={{ marginBottom: 6 }}>
           Test Drive Requests

@@ -512,3 +512,72 @@ h1, h2, h3 { line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; }
   .feature-list { grid-template-columns: 1fr; }
   .spec-row { grid-template-columns: 130px 1fr; }
 }
+
+/* ---------- Extra button variants ---------- */
+.btn-outline { background: transparent; color: #fff; border-color: var(--red); }
+.btn-outline:hover { background: var(--red); color: #fff; }
+.btn-danger { color: #ff6b6b; border-color: rgba(255, 107, 107, 0.4); }
+.btn-danger:hover { background: rgba(255, 107, 107, 0.12); border-color: #ff6b6b; color: #ff6b6b; }
+.btn svg { width: 18px; height: 18px; stroke: currentColor; }
+
+/* ---------- Coming soon (covered car) card ---------- */
+.tag-soon { background: #1a1a1a !important; border: 1px solid var(--red); color: var(--red) !important; }
+.car-media-reveal { overflow: hidden; display: block; }
+.car-media-reveal img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.5s ease; }
+.car-media-reveal .reveal-cover { opacity: 1; z-index: 1; }
+.car-media-reveal .reveal-real { opacity: 0; z-index: 0; }
+.card-coming-soon:hover .reveal-cover,
+.car-media-reveal:focus-visible .reveal-cover { opacity: 0; }
+.card-coming-soon:hover .reveal-real,
+.car-media-reveal:focus-visible .reveal-real { opacity: 1; z-index: 2; }
+.reveal-hint {
+  position: absolute; bottom: 12px; right: 12px; z-index: 3;
+  background: rgba(15, 15, 15, 0.75); color: #fff; font-size: 0.72rem;
+  padding: 5px 10px; border-radius: 999px; backdrop-filter: blur(4px);
+  transition: opacity 0.3s; pointer-events: none;
+}
+.card-coming-soon:hover .reveal-hint { opacity: 0; }
+.car-price-soon { color: var(--muted) !important; font-style: italic; }
+.car-soon-text { color: var(--muted); font-size: 0.9rem; margin-bottom: 16px; line-height: 1.6; }
+.card-coming-soon .car-actions .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+
+/* ---------- Admin vehicle manager ---------- */
+.vehicle-manager { margin-top: 8px; }
+.vehicle-manager-toolbar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+.vehicle-editor-wrap { margin-bottom: 32px; }
+.vehicle-form { max-width: 720px; }
+.vehicle-form-head { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.vehicle-form-thumb { width: 72px; height: 54px; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--border); }
+.vehicle-form-actions { display: flex; gap: 12px; margin-top: 20px; }
+
+.vehicle-admin-group { margin-top: 36px; }
+.vehicle-admin-group > h3 { margin-bottom: 16px; }
+.vehicle-admin-list { display: flex; flex-direction: column; gap: 12px; }
+.vehicle-admin-row { display: flex; align-items: center; gap: 18px; padding: 16px; }
+.vehicle-admin-thumb { width: 96px; height: 64px; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--border); flex-shrink: 0; }
+.vehicle-admin-info { flex: 1; min-width: 0; }
+.vehicle-admin-name { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.vehicle-admin-name h4 { font-size: 1.05rem; }
+.vehicle-admin-meta { color: var(--muted); font-size: 0.88rem; margin-top: 4px; }
+.vehicle-admin-actions { display: flex; gap: 10px; flex-shrink: 0; }
+.pill { font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.04em; }
+.pill-live { background: rgba(81, 207, 102, 0.15); color: #51cf66; }
+.pill-soon { background: rgba(205, 0, 18, 0.15); color: var(--red); }
+
+@media (max-width: 640px) {
+  .vehicle-admin-row { flex-wrap: wrap; }
+  .vehicle-admin-actions { width: 100%; }
+}
+
+/* ---------- Wish order page ---------- */
+.wish-hero-media {
+  position: relative; border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--border); aspect-ratio: 4 / 3;
+  background: linear-gradient(135deg, #2a2a2a, #161616);
+}
+.wish-hero-media img { width: 100%; height: 100%; object-fit: cover; }
+.wish-hero-media .tag { position: absolute; top: 16px; left: 16px; background: var(--red); color: #fff; font-size: 0.74rem; font-weight: 600; padding: 6px 14px; border-radius: 999px; }
+.wish-points { list-style: none; margin-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+.wish-points li { display: flex; align-items: flex-start; gap: 10px; color: var(--muted); }
+.wish-points svg { width: 20px; height: 20px; stroke: var(--red); flex-shrink: 0; margin-top: 2px; }
+.booking-success .success-icon svg { stroke: var(--red); }

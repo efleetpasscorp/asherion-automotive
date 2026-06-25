@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getCarById } from "@/lib/cars"
+import { getVehicleById } from "@/lib/catalog"
 import { createCheckoutLink, isSquareConfigured } from "@/lib/square"
 
 export async function POST(request: NextRequest) {
@@ -22,9 +22,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing vehicle id." }, { status: 400 })
   }
 
-  const car = getCarById(id)
+  const car = await getVehicleById(id)
   if (!car) {
     return NextResponse.json({ error: "Vehicle not found." }, { status: 404 })
+  }
+  if (car.status === "coming-soon" || car.amountCents <= 0) {
+    return NextResponse.json(
+      { error: "This vehicle is coming soon and isn't available for checkout yet." },
+      { status: 409 },
+    )
   }
 
   // Build an absolute redirect URL back to our success page.
