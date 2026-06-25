@@ -1,34 +1,43 @@
 # Asherion Automotive
 
-Marketing website for Asherion Automotive — a used-car dealership. Static, multi-page
-site (no build step) modelled on the design language of the reference site
-asherionautomotive.com.au: dark charcoal theme, red accent, Inter typography,
-rounded white header, and a "Book Now" call-to-action.
+Marketing website for Asherion Automotive — a used-car dealership. Built with
+**Next.js 16** (App Router), React 19, and TypeScript. Dark charcoal theme, red accent,
+Inter typography, rounded white header, and a "Book Now" call-to-action.
 
 ## Pages
 
-| File | Page |
-|------|------|
-| `index.html` | Home — hero, about teaser, rental collection, cars we sell, services, CTA |
-| `about.html` | About Us — story, stats, values |
-| `stock.html` | Our Stock — rental collection + cars for sale |
-| `contact.html` | Contact Us — enquiry form, contact info, location |
-| `styles.css` | Shared design system / styling |
+| Route | Page |
+|-------|------|
+| `/` | Home — hero, about teaser, rental collection, cars we sell, services, CTA |
+| `/about` | About Us — story, stats, values |
+| `/stock` | Our Stock — rental collection + cars for sale |
+| `/contact` | Contact Us — enquiry form, contact info, location |
 
-> Copy and car images are placeholders by design — swap in real content and photos when ready.
+## Structure
+
+- `app/` — routes, root layout, and global styles (`globals.css`)
+- `components/` — shared UI (`site-header`, `site-footer`, `car-card`, `cta-band`, `contact-form`, `icons`)
+- `lib/cars.ts` — vehicle data for the rental and sale grids
+- `public/images/` — vehicle and showroom imagery
+
+## Development
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open http://localhost:3000.
+
+## Build
+
+```bash
+pnpm build
+pnpm start
+```
 
 ## Deploying on Vercel
 
-This is a plain static site, so no framework or build command is required.
-
-1. Go to [vercel.com/new](https://vercel.com/new).
-2. Import this repository.
-3. Leave the build settings empty (Framework Preset: **Other**) and click **Deploy**.
-
-`vercel.json` enables clean URLs (`/about` instead of `/about.html`). Every push to the
-default branch triggers an automatic redeploy.
-
-## Custom domain
-
-After the first deploy, attach `asherionauto.com.au` under
-**Project → Settings → Domains** in Vercel.
+1. Go to [vercel.com/new](https://vercel.com/new) and import this repository.
+2. Vercel auto-detects Next.js — leave the defaults and click **Deploy**.
+3. Attach a custom domain under **Project → Settings → Domains**.
